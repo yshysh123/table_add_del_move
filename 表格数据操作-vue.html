@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        td {
+            text-align: center;
+        }
+        ul,li{
+        	list-style: none;
+        	margin: 0;
+        	padding: 0;
+        }
+        #table ul{
+        	float:left;
+        	width:200px;
+        }
+        #table ul li{
+        	height: 30px;
+        	line-height: 30px;
+        	width:200px;
+        	border: 1px solid #000;
+        	text-align: center;
+        }
+        .active{
+        	background:red;
+        }
+        .noactive{
+        	background:none;
+        }
+    </style>
+   
+</head>
+
+<body>
+<div id="box">
+	<form action="" name="form" id="form">
+	    <span>
+	        姓名:<input type="text" name="username"/>
+	    </spanspan>
+	    <span>
+	        年龄:<input type="text" name="age"/>
+	    </span>
+	    <span>性别: 
+	    	<select name="sex">
+	            <option value="男">男</option>
+	            <option value="女">女</option>
+	        </select>
+	    </span>
+	    <span>
+	        <input type="button" value="添加" name="add" @click="addname"/>
+	    </span>
+	</form>
+	<p>排序: 
+		<select name="sex" id="sortname">
+            <option value="ById">ById</option>
+            <option value="ByAge">ByAge</option>
+        </select>
+        <select name="sex" id="sortff">
+            <option value="从小到大">从小到大</option>
+            <option value="从大到小">从大到小</option>
+        </select>
+        <input type="button" value="排序"  class="btn" @click="sort">
+        <input type="button" value="批量删除"  class="btn" @click="deleteall"> 
+    </p>
+   	<div id="table">
+   		<ul>
+   			<li>全选<input type="checkbox" @click="quanxuan" id='qx'/>
+   			</li>
+   			<li v-for="(item,index) in items" :class="{active:item.isactive}">
+   				<input type="checkbox" class="dx" @click="danxuan(index)" :click='click'/>
+   			</li>
+   		</ul>
+   		<ul>
+   			<li>ID</li>
+   			<li v-for="item in items" :class="{active:item.isactive}">{{item.id}}</li>
+   		</ul>
+   		<ul>
+   			<li>姓名</li>
+   			<li v-for="item in items" :class="{active:item.isactive}">{{item.name}}</li>
+   		</ul>
+   		<ul>
+   			<li>年龄</li>
+   			<li v-for="item in items" :class="{active:item.isactive}">{{item.age}}</li>
+   		</ul>
+   		<ul>
+   			<li>性别</li>
+   			<li v-for="item in items" :class="{active:item.isactive}">{{item.sex}}</li>
+   		</ul>
+   		<ul>
+   			<li>操作</li>
+   			<li v-for="(item,index) in items" :class="{active:item.isactive}">
+   				<a href="javascript:;" @click="up(index)">上移</a> |
+                <a href="javascript:;" @click="down(index)">下移</a> |
+                <a href="javascript:;" @click="del(index)">删除</a>
+   			</li>
+   		</ul>
+   	</div>
+</div>
+    <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    	/*
+  	 	1.渲染页面
+  	 	2.上移下移删除
+  	 	3.全选
+  	 	4.反选
+  	 	5.批量删除
+  	 	6.添加数据
+  	 	7.排序
+  	 * */
+    	var example1 = new Vue({
+    		el:'#box',
+    		data:{
+    			items:[
+					{
+						id:1,
+						name:'宋小宝',
+						age:36,
+						sex:'男',
+						isactive:false
+					},
+					{
+						id:2,
+						name:'郭德纲',
+						age:43,
+						sex:'男',
+						isactive:false
+					},
+					{
+						id:3,
+						name:'黄渤',
+						age:28,
+						sex:'男',
+						isactive:false
+					},
+					{
+						id:4,
+						name:'赵丽颖',
+						age:25,
+						sex:'女',
+						isactive:false
+					},
+					{
+						id:5,
+						name:'刘亦菲',
+						age:22,
+						sex:'女',
+						isactive:false
+					}
+				],
+				num:0,
+				click:false,
+				arr:[],
+				active:false
+    		},
+    		mounted(){
+    			var inputs = document.getElementsByTagName('input');
+    			var sel = document.getElementsByTagName('select')[0];
+    			this.name = inputs[0];
+    			this.age = inputs[1];
+    			this.sel = sel;
+    			this.id = 5;
+    			this.sortname = document.getElementById('sortname')
+    			this.sortff = document.getElementById('sortff')
+    			this.qx = document.getElementById('qx')
+    			this.inputs = document.getElementsByClassName('dx')
+    			this.table = document.getElementById('table');
+    			this.ul = table.getElementsByTagName('ul');
+    			this.xr()
+    		},
+    		methods:{
+    			xr(){
+    				for(var i=0;i<this.items.length;i++){
+	    				if(i%2==0){
+	    					this.items[i].isactive = true;
+	    				}else{
+	    					this.items[i].isactive = false;
+	    				}
+	    			}
+    			},
+    			addname(){
+    				if(this.name.value&&this.age.value){
+	    				this.items.push({
+	    					id:++this.id,
+	    					name:this.name.value,
+							age:this.age.value,
+							sex:this.sel.value,
+							isactive:this.active
+	    				})
+	    				this.xr()
+	    				this.name.value = '';
+	    				this.age.value = '';
+    				}else{
+    					alert('清输入内容')
+    				}
+    			},
+    			down(index){
+					let down = this.items.splice(index,1);
+    				this.items.splice(index+1,0,down[0])
+    				this.xr()
+    			},
+    			up(index){
+    				if(index==0){
+    					return
+    				}else{
+    					let up = this.items.splice(index,1);
+    					this.items.splice(index-1,0,up[0])
+    				}
+    				this.xr()
+    			},
+    			del(index){
+    				this.items.splice(index, 1)
+    				this.xr()
+    			},
+    			sort(){
+    				if(this.sortname.value=='ById'&&this.sortff.value=='从小到大'){
+    					this.items.sort(function(a,b){
+    						return a.id-b.id
+    					})
+    				}
+    				if(this.sortname.value=='ById'&&this.sortff.value=='从大到小'){
+    					this.items.sort(function(a,b){
+    						return b.id-a.id
+    					})
+    				}
+    				if(this.sortname.value=='ByAge'&&this.sortff.value=='从小到大'){
+    					this.items.sort(function(a,b){
+    						return a.age-b.age
+    					})
+    				}
+    				if(this.sortname.value=='ByAge'&&this.sortff.value=='从大到小'){
+    					this.items.sort(function(a,b){
+    						return b.age-a.age
+    					})
+    				}
+    			},
+    			danxuan(index){
+    				if(this.inputs[index].checked){
+    					this.num++;
+	    				if(this.num==this.items.length){
+	    					this.qx.checked = 'checked'
+	    					this.click=true;
+	    				}
+    				}else{
+    					this.num--;
+    					this.qx.checked = ''
+    					this.click=false;
+    				}
+    				
+    			},
+    			quanxuan(){
+    				if(!this.click){
+    					this.click=true;
+    					this.num=this.items.length;
+	    				for(var i=0;i<this.inputs.length;i++){
+	    					this.inputs[i].checked = 'checked'
+	    				}
+    				}else{
+    					this.click=false;
+    					this.num=0;
+	    				for(var i=0;i<this.inputs.length;i++){
+	    					this.inputs[i].checked = ''
+	    				}
+    				}
+    			},
+    			deleteall(){
+    				for(var i=0;i<this.inputs.length;i++){
+    					if(this.inputs[i].checked){
+    						this.num--;
+				 			this.inputs[i].checked = '';
+			  	 			this.arr.push(this.items[i])
+    					}
+    				}
+    				for(var i=0;i<this.items.length;i++){
+    					for(var j=0;j<this.arr.length;j++){
+    						if(this.items[i]==this.arr[j]){
+    							this.items.splice(i,1)
+    						}
+    					}
+    				}
+    				this.xr()
+    			}
+    		}
+    	})
+    </script>
+</body>
+</html>

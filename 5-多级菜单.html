@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			ul{
+				list-style: none;
+			}
+			#list ul{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<ul id="list">
+			<!--<li>
+				<h2>第一级</h2>
+				<ul>
+					<li>
+						<h2>第二级</h2>
+					</li>
+					<li>
+						<h2>第二级</h2>
+						<ul>
+							<li></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<h2>第一级</h2>
+			</li>
+			<li>
+				<h2>第一级</h2>
+				<ul>1</ul>
+			</li>-->
+		</ul>
+		<script>
+			var data = [
+				{
+					name:'第一级',
+					child:[
+						{
+							name:'第二级',
+							child:[
+								{
+									name:'第三级',
+									child:[
+										{
+											name:'第四级',
+											child:[]
+										},
+										{
+											name:'第四级',
+											child:[]
+										}
+									]
+								},
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[
+										{
+											name:'第四级',
+											child:[]
+										},
+										{
+											name:'第四级',
+											child:[]
+										}
+									]
+								}
+							]
+						},
+						{
+							name:'第二级',
+							child:[
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								}
+							]
+						},
+						{
+							name:'第二级',
+							child:[]
+						}
+					]
+				},
+				{
+					name:'第一级',
+					child:[
+						{
+							name:'第二级',
+							child:[
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								}
+							]
+						},
+						{
+							name:'第二级',
+							child:[
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								}
+							]
+						},
+						{
+							name:'第二级',
+							child:[]
+						}
+					]
+				},
+				{
+					name:'第一级',
+					child:[
+						{
+							name:'第二级',
+							child:[
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								}
+							]
+						},
+						{
+							name:'第二级',
+							child:[
+								{
+									name:'第三级',
+									child:[]
+								},
+								{
+									name:'第三级',
+									child:[]
+								}
+							]
+						},
+						{
+							name:'第二级',
+							child:[]
+						}
+					]
+				}
+			];
+//			<li>
+//				<h2>第一级</h2>
+//				<ul>
+//					<li>
+//						<h2>第二级</h2>
+//					</li>
+//					<li>
+//						<h2>第二级</h2>
+//						<ul>
+//							<li></li>
+//						</ul>
+//					</li>
+//				</ul>
+//			</li>
+//			<li>
+//				<h2>第一级</h2>
+//			</li>
+//			<li>
+//				<h2>第一级</h2>
+//				<ul>1</ul>
+//			</li>
+			var list = document.getElementById('list');
+			var str = '';
+			fn(data)
+			function fn(data){
+				for(var i=0;i<data.length;i++){
+					
+					str += '<li><h2>'+data[i].name+'</h2>';
+					if(data[i].child.length){
+						str += '<ul>';
+						fn(data[i].child);
+						if(i==data.length-1){
+							str+='</ul>';
+						}
+					}
+					else{
+						str+='</li>';
+						if(i==data.length-1){
+							str+='</ul>';
+						}
+					}
+					
+				}
+			}
+			list.innerHTML = str;
+			var onOff = true;
+			var h2s = list.getElementsByTagName('h2');
+			for(var i=0;i<h2s.length;i++){
+				h2s[i].index = i;
+				h2s[i].onOff = true;
+				h2s[i].onclick = function(){
+					if(h2s[this.index].nextElementSibling){
+						if(h2s[this.index].onOff){
+							h2s[this.index].onOff = false;
+							h2s[this.index].nextElementSibling.style.display = 'block';
+						}else{
+							h2s[this.index].onOff = true;
+							h2s[this.index].nextElementSibling.style.display = 'none';
+						}
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

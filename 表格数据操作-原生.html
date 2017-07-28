@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        td {
+            text-align: center;
+        }
+    </style>
+   
+</head>
+
+<body>
+
+<form action="" name="form" id="form">
+    <p>
+        姓名:<input type="text" name="username"/>
+    </p>
+    <p>
+        年龄:<input type="text" name="age"/>
+    </p>
+    <p>
+        性别: <select name="sex">
+            <option value="男">男</option>
+            <option value="女">女</option>
+        </select>
+    </p>
+    <p>
+        <input type="button" value="添加" name="add"/>
+    </p>
+</form>
+    <input type="button" value="反选" class="btn">
+    <input type="button" value="批量删除"  class="btn"> 
+    <table id="tab1" width="100%" border="1">
+
+        <thead>
+        <tr>
+            <th>
+                <input id="checkAll" type="checkbox" /> 全选
+            </th>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+             <!--<tr>
+                <td>
+                    <input type="checkbox"/>
+                </td>
+                <td>1</td>
+                <td>周杰伦</td>
+                <td>37</td>
+                <td>男</td>
+                <td>
+                    <a href="javascript:;">上移</a> |
+                    <a href="javascript:;">下移</a> |
+                    <a href="javascript:;">删除</a>
+                </td>
+            </tr> -->
+        </tbody>
+    </table>
+    <script type="text/javascript">
+		var Data = [
+			{
+				id:1,
+				name:'宋小宝',
+				age:36,
+				sex:'男'
+			},
+			{
+				id:2,
+				name:'郭德纲',
+				age:43,
+				sex:'男'
+			},
+			{
+				id:3,
+				name:'黄渤',
+				age:28,
+				sex:'男'
+			},
+			{
+				id:4,
+				name:'赵丽颖',
+				age:25,
+				sex:'女'
+			},
+			{
+				id:5,
+				name:'刘亦菲',
+				age:22,
+				sex:'女'
+			}
+		];
+  	/*
+  	 	1.渲染页面
+  	 	2.上移下移删除
+  	 	3.全选
+  	 	4.反选
+  	 	5.批量删除
+  	 	6.添加数据
+  	 	7.排序
+  	 * */
+  	//生成结构
+  	var tab1 =document.getElementById('tab1');
+	var tbody = document.getElementsByTagName('tbody')[0]
+	var num = 0;
+  	function shengcheng(){
+	  	for(var i=0;i<Data.length;i++){
+	  		var t = tbody.insertRow();
+	  		var td = t.insertCell();
+	  		td.innerHTML = '<input id="checkAll" type="checkbox" />'
+	  		for(var k in Data[i]){
+	  			var td = t.insertCell();
+	  			td.innerHTML = Data[i][k];
+	  		}
+			var td = t.insertCell();
+			var str = '<a href="javascript:;">上移</a> |' +
+	                  '<a href="javascript:;">下移</a> |' +
+	                  '<a href="javascript:;">删除</a>';
+			td.innerHTML = 	str;
+		}
+  	}
+  	shengcheng();
+  	//右边操作
+  	caozuo();
+  	function caozuo(){
+  		var aas = document.getElementsByTagName('a');
+  		var trs = tbody.getElementsByTagName('tr');
+	  	for(var i=0;i<aas.length;i++){
+	  		aas[i].index = Math.floor(i/3);
+	  		if(i%3==0){
+	  			aas[i].onclick = function(){
+	  				if(trs[this.index].previousElementSibling){
+	  					tbody.insertBefore(trs[this.index],trs[this.index].previousElementSibling)
+	  				}
+	  				caozuo()
+	  			}
+	  		}
+	  		else if(i%3==1){
+	  			aas[i].onclick = function(){
+	  				if(trs[this.index].nextElementSibling){
+	  					tbody.insertBefore(trs[this.index].nextElementSibling,trs[this.index])
+	  				}
+	  				caozuo();
+	  			}
+	  		}
+	  		else{
+	  			aas[i].onclick = function(){
+					tab1.tBodies[0].deleteRow(this.index);
+					caozuo();
+	  			}
+	  		}
+	  	}
+  	}
+  	//全选判断
+  	function quanxuan(){
+  		var inputs = tab1.getElementsByTagName('input');
+  	 	if(num==inputs.length-1){
+ 			inputs[0].onOff = false;
+ 			inputs[0].checked = 'checked';
+ 		}else{
+ 			inputs[0].onOff = true;
+ 			inputs[0].checked = '';
+ 		}
+  	}
+  	//全选反选
+  	var btns = document.getElementsByClassName('btn');
+  	xuanze();
+  	
+  	function xuanze(){
+	  	var inputs = tab1.getElementsByTagName('input');
+	  	for(var i=1;i<inputs.length;i++){
+	  	 	inputs[i].index = i;
+	  	 	inputs[i].onOff = false;
+	  	 	inputs[i].onclick = function(){
+	  	 		if(!this.onOff){
+	  	 			num++;
+	  	 			this.onOff = true;
+	  	 		}
+	  	 		else{
+	  	 			num--;
+	  	 			this.onOff = false;
+	  	 		}
+	  	 		quanxuan();
+	  	 	}
+	  	}
+	  	inputs[0].onOff = true;
+	  	inputs[0].onclick =function(){
+	 		if(inputs[0].onOff){
+	 			inputs[0].onOff = false;
+	 			for(var i=1;i<inputs.length;i++){
+	  	 			num = inputs.length-1;
+	  	 			inputs[i].onOff = true;
+	  	 			inputs[i].checked = 'checked';
+	 			}
+	 			quanxuan();
+	 		}else{
+	 			inputs[0].onOff = true;
+	 			for(var i=1;i<inputs.length;i++){
+	  	 			num = 0;
+	  	 			inputs[i].onOff = false;
+	  	 			inputs[i].checked = '';
+	 			}
+	 			quanxuan();
+	 		}
+	  	}
+	  	 //反选
+	  	btns[0].onclick = function(){
+	  	 	for(var i=1;i<inputs.length;i++){
+	 			if(!inputs[i].onOff){
+	  	 			num++;
+	  	 			inputs[i].onOff = true;
+	  	 			inputs[i].checked = 'checked';
+	  	 			quanxuan();
+	  	 		}
+	  	 		else{
+	  	 			num--;
+	  	 			inputs[i].onOff = false;
+	  	 			inputs[i].checked = '';
+	  	 			quanxuan();
+	  	 		}
+			}
+	  	}
+	  	 //批量删除
+	  	btns[1].onclick = function(){
+	  	 	for(var i=1;i<inputs.length;i++){
+	  	 		if(inputs[i].onOff){
+		 			num--;
+		 			inputs[i].onOff = false;
+		 			inputs[i].checked = '';
+	  	 			quanxuan();
+	  	 			tab1.tBodies[0].deleteRow(i-1);
+	  	 			caozuo();
+	  	 			i--;
+	  	 		}
+	  	 	}
+	  	}
+  	}
+  	 
+  	 //添加
+  	var form = document.getElementById('form');
+  	var str1 = '';
+  	var numid = 5;
+  	form.add.onclick = function(){
+  	 	if(form.username.value==''){
+  	 		alert('请输入姓名');
+  	 	}
+  	 	else if(form.age.value==''){
+  	 		alert('请输入年龄')
+  	 	}
+  	 	else{
+  	 		numid++;
+	  	 	var tnew = tbody.insertRow();
+	 		tnew.insertCell().innerHTML = '<input id="checkAll" type="checkbox" />';
+	 		tnew.insertCell().innerHTML = numid;
+	 		tnew.insertCell().innerHTML = form.username.value;
+	 		tnew.insertCell().innerHTML = form.age.value;
+	 		tnew.insertCell().innerHTML = form.sex.value;
+	 		tnew.insertCell().innerHTML = '<a href="javascript:;">上移</a> |' +
+		                  	'<a href="javascript:;">下移</a> |' +
+		                  	'<a href="javascript:;">删除</a>';
+		    caozuo();
+		    xuanze();
+  	 	}
+  	 	
+  	}
+  	//排序
+  	var ths = document.getElementsByTagName('th');
+  	var ageid = true;
+  	ths[1].onclick = function(){
+  		var arr1 = [];
+  		var tbody = document.getElementsByTagName('tbody')[0];
+  		var ids = tbody.getElementsByTagName('td');
+  		for(var i=1;i<ids.length;i+=6){
+  			arr1.push(ids[i]);
+  		}
+  		if(ageid){
+  			ageid = false;
+  			arr1.sort(function(a,b){
+	  			return b.innerHTML - a.innerHTML;
+	  		})
+			tbody.innerHTML = '';
+			for(var i=0;i<arr1.length;i++){
+				tbody.innerHTML += arr1[i].parentElement.innerHTML;
+			}
+	  		caozuo();
+	  		xuanze();
+  		}else{
+  			ageid = true;
+  			tbody.innerHTML = '';
+  			arr1.sort(function(a,b){
+	  			return a.innerHTML - b.innerHTML;
+	  		})
+			for(var i=0;i<arr1.length;i++){
+				tbody.innerHTML += arr1[i].parentElement.innerHTML;
+			}
+	  		caozuo();
+	  		xuanze();
+  		}
+  	}
+  	var ageOnf = true;
+  	ths[3].onclick = function(){
+  		var arr2 = [];
+  		var tbody = document.getElementsByTagName('tbody')[0];
+  		var ages = tbody.getElementsByTagName('td');
+  		for(var i=3;i<ages.length;i+=6){
+  			arr2.push(ages[i]);
+  		}
+  		if(ageOnf){
+  			ageOnf = false;
+  			arr2.sort(function(a,b){
+	  			return a.innerHTML - b.innerHTML;
+	  		})
+			tbody.innerHTML = '';
+//			console.log(arr2[0].parentElement.innerHTML)
+			for(var i=0;i<arr2.length;i++){
+				tbody.innerHTML += '<tr>'+arr2[i].parentElement.innerHTML+'</tr>';
+			}
+	  		caozuo();
+	  		xuanze();
+  		}else{
+  			ageOnf = true;
+  			tbody.innerHTML = '';
+  			arr2.sort(function(a,b){
+	  			return b.innerHTML - a.innerHTML;
+	  		})
+	//		console.log(arr2[0].parentElement.innerHTML)
+			for(var i=0;i<arr2.length;i++){
+	//			console.log(arr2[i].parentElement.innerHTML)
+				tbody.innerHTML += '<tr>'+arr2[i].parentElement.innerHTML+'</tr>';
+			}
+	  		caozuo();
+	  		xuanze();
+  		}
+  		
+  	}
+    </script>
+</body>
+</html>
